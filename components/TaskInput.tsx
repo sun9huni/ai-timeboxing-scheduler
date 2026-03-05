@@ -45,7 +45,7 @@ export default function TaskInput({
     recognition.continuous = true;
     recognition.interimResults = false;
 
-    recognition.onresult = (e) => {
+    recognition.onresult = (e: any) => {
       const transcript = Array.from(e.results)
         .map((r) => r[0].transcript)
         .join("\n");
