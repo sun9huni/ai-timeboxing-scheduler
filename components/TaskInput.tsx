@@ -23,13 +23,13 @@ export default function TaskInput({
   const [isRecording, setIsRecording] = useState(false);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
 
   const toggleVoice = () => {
-    const SpeechRecognition =
-      (window as unknown as { webkitSpeechRecognition?: typeof SpeechRecognition }).webkitSpeechRecognition ||
-      window.SpeechRecognition;
-
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const w = window as any;
+    const SpeechRecognition = w.webkitSpeechRecognition || w.SpeechRecognition;
     if (!SpeechRecognition) {
       alert("이 브라우저는 음성 입력을 지원하지 않습니다. Chrome을 사용해주세요.");
       return;
