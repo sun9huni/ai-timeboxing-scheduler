@@ -1,0 +1,41 @@
+# === 민감 파일 (절대 커밋 금지) ===
+credentials.json
+token.json
+.env
+.env.local
+.env.production
+.env.*.local
+profiles.json
+
+# === Python ===
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.Python
+pip-log.txt
+.pytest_cache/
+
+# === Next.js / Node ===
+node_modules/
+.next/
+out/
+.cache/
+*.tsbuildinfo
+next-env.d.ts
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+
+# === Vercel ===
+.vercel/

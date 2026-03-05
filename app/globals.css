@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-dark: #0E1117;
+  --bg-surface: #1C202B;
+  --bg-card: #161b27;
+  --brand-primary: #667eea;
+  --brand-secondary: #764ba2;
+  --text-primary: #FAFAFA;
+  --text-muted: #9ca3af;
+  --border-color: rgba(102, 126, 234, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-primary);
+  border-radius: 3px;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent 25%, rgba(102, 126, 234, 0.1) 50%, transparent 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Custom components */
+@layer components {
+  .card {
+    @apply bg-surface rounded-xl border border-white/10 p-5;
+  }
+  .btn-primary {
+    @apply bg-brand-gradient text-white font-semibold px-6 py-3 rounded-xl
+           hover:opacity-90 active:scale-95 transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  .btn-secondary {
+    @apply bg-white/10 text-white font-medium px-4 py-2 rounded-lg
+           hover:bg-white/20 active:scale-95 transition-all duration-200;
+  }
+  .input-field {
+    @apply bg-surface-card border border-white/10 rounded-lg px-4 py-3 text-white
+           placeholder-gray-500 focus:border-brand-500 focus:outline-none
+           transition-colors w-full;
+  }
+  .step-badge {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+           bg-brand-gradient text-white shrink-0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  .step-badge-done {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+           bg-green-500/20 text-green-400 border border-green-500/30 shrink-0;
+  }
+  .step-badge-pending {
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold
+           bg-white/5 text-gray-500 border border-white/10 shrink-0;
+  }
+}
