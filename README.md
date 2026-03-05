@@ -1,109 +1,162 @@
-# 🤖 AI 타임박싱 스케줄러
+# 🤖 AI Timeboxing Scheduler
 
-사용자의 프로필과 할 일을 입력받아 OpenAI의 LLM(GPT)을 사용하여 지능적으로 우선순위를 정한 뒤, Google 캘린더에 자동으로 일정을 등록하는 Streamlit 애플리케이션입니다.
+> AI가 할 일을 분석하고 우선순위를 정해 Google Calendar에 자동으로 타임박스 일정을 등록하는 스마트 스케줄러
 
-## 🚀 주요 기능
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/sun9huni/ai-timeboxing-scheduler)
 
-- **AI 기반 스케줄링**: OpenAI GPT를 활용한 지능적인 일정 계획
-- **Google Calendar 연동**: 자동으로 캘린더에 일정 등록
-- **사용자 맞춤형**: 개인 프로필과 선호도에 따른 최적화된 스케줄
-- **기존 일정 고려**: 이미 있는 일정과 겹치지 않는 스마트한 계획
+## ✨ 주요 기능
 
-## 📋 사전 준비
+| 기능 | 설명 |
+|---|---|
+| 🧠 AI 타임박싱 | GPT-4o가 작업 복잡도·우선순위를 분석해 9시~18시 일정 자동 생성 |
+| 🔗 Google Calendar 연동 | OAuth 2.0으로 기존 일정 조회 및 새 이벤트 자동 등록 |
+| 🤖 6단계 Agent 파이프라인 | Reflection → Ranking → Decomposition → Evolution → Proximity → Meta-review |
+| ✂️ COT 작업 분해 | 복잡한 작업을 ADHD 친화적 서브태스크로 자동 분해 |
+| 🎨 인터랙티브 타임라인 | 시간 블록 시각화 + 드래그 삭제 |
+| 🎤 음성 입력 | Web Speech API (Chrome) 지원 |
+| 💾 프로필 저장 | localStorage 기반 다중 프로필 관리 |
+| 🎯 스케줄링 프리셋 | 균형잡힌 / 엄격한 / 유연한 / 긴급 우선 |
 
-### 1. Google Calendar API 설정
+## 🏗️ 아키텍처
 
-1. [Google Cloud Console](https://console.cloud.google.com/)에 접속하여 새 프로젝트를 생성합니다.
+```
+ai-timeboxing-scheduler/
+├── api/                        # FastAPI – Vercel Serverless
+│   ├── index.py               # 메인 앱 (Mangum ASGI 어댑터)
+│   └── lib/
+│       ├── ai_scheduler.py    # OpenAI 프롬프트 빌더
+│       ├── scheduling_agent.py# 6단계 Agent 파이프라인
+│       ├── task_decomposer.py # COT 작업 분해
+│       ├── validation.py      # 입력/출력 검증
+│       ├── profile_manager.py # 프로필 템플릿
+│       └── calendar_service.py# Google Calendar Web OAuth
+├── app/                        # Next.js 14 App Router
+│   ├── page.tsx               # 메인 페이지 (5단계 마법사)
+│   ├── layout.tsx
+│   └── globals.css
+├── components/
+│   ├── ProfileSidebar.tsx     # 프로필·API키·프리셋 설정
+│   ├── CalendarConnect.tsx    # Google 연동 버튼
+│   ├── TaskInput.tsx          # 할 일 입력 + 음성
+│   └── ScheduleTimeline.tsx   # 인터랙티브 타임라인
+├── lib/
+│   ├── api.ts                 # API 클라이언트
+│   └── types.ts               # TypeScript 타입
+├── vercel.json                 # Vercel 라우팅 설정
+├── next.config.mjs
+├── tailwind.config.ts
+└── requirements.txt
+```
 
-2. **'API 및 서비스' > '라이브러리'**에서 **"Google Calendar API"**를 검색하여 '사용 설정'합니다.
+## 🚀 빠른 시작
 
-3. **'API 및 서비스' > '사용자 인증 정보'**로 이동합니다.
+### 1. 저장소 클론
 
-4. **'+ 사용자 인증 정보 만들기' > 'OAuth 클라이언트 ID'**를 선택합니다.
+```bash
+git clone https://github.com/sun9huni/ai-timeboxing-scheduler.git
+cd ai-timeboxing-scheduler
+```
 
-5. '애플리케이션 유형'을 **'데스크톱 앱'**으로 선택하고 '만들기'를 누릅니다.
+### 2. 환경변수 설정
 
-6. 생성된 인증 정보(JSON)를 다운로드하고, 파일 이름을 `credentials.json`으로 변경하여 프로젝트 폴더에 저장합니다.
+```bash
+cp .env.example .env.local
+```
 
-### 2. OpenAI API 키 준비
+`.env.local` 파일을 열어 값을 채웁니다:
 
-[OpenAI Platform](https://platform.openai.com/api-keys)에서 API 키를 생성하고 준비합니다.
+```env
+OPENAI_API_KEY=sk-...
+GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your-client-secret
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
 
-## 🛠️ 설치 및 실행
+### 3. 프론트엔드 실행
 
-### 1. 라이브러리 설치
+```bash
+npm install
+npm run dev
+```
+
+### 4. 백엔드 실행 (별도 터미널)
 
 ```bash
 pip install -r requirements.txt
+npm run dev:api
+# 또는: cd api && uvicorn index:app --reload --port 8000
 ```
 
-### 2. 애플리케이션 실행
+→ 브라우저에서 `http://localhost:3000` 접속
+
+---
+
+## ☁️ Vercel 배포
+
+### 사전 준비
+
+#### Google Calendar API 설정
+
+1. [Google Cloud Console](https://console.cloud.google.com/) → 새 프로젝트 생성
+2. **API 및 서비스 > 라이브러리** → `Google Calendar API` 사용 설정
+3. **사용자 인증 정보 > OAuth 클라이언트 ID** 생성 (웹 애플리케이션 유형)
+4. **승인된 리디렉션 URI** 추가:
+   - 개발: `http://localhost:3000/api/calendar/callback`
+   - 프로덕션: `https://your-domain.vercel.app/api/calendar/callback`
+
+#### Vercel 환경변수 설정
+
+Vercel 대시보드 → 프로젝트 → Settings → Environment Variables:
+
+| 변수 | 값 |
+|---|---|
+| `OPENAI_API_KEY` | `sk-...` |
+| `GOOGLE_CLIENT_ID` | Google OAuth 클라이언트 ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth 클라이언트 시크릿 |
+| `NEXT_PUBLIC_APP_URL` | `https://your-domain.vercel.app` |
+
+### CLI로 배포
 
 ```bash
-streamlit run app.py
+npm install -g vercel
+vercel login
+vercel --prod
 ```
 
-### 3. 사용 방법
+---
 
-1. **Google Calendar 연결**: 첫 실행 시 Google 인증을 진행합니다.
-2. **사용자 프로필 설정**: 사이드바에서 개인 정보를 입력합니다.
-3. **할 일 입력**: 오늘 완료해야 할 일을 입력합니다.
-4. **AI 스케줄 생성**: AI가 최적의 스케줄을 생성합니다.
-5. **캘린더 저장**: 생성된 스케줄을 Google Calendar에 저장합니다.
+## 📖 사용 방법
 
-## 📁 파일 구조
+1. **Google Calendar 연결** — 첫 실행 시 Google 계정 인증
+2. **프로필 설정** — 역할, OKR, 선호 시간대 입력 (템플릿 제공)
+3. **날짜 선택 & 기존 일정 불러오기** — 오늘 또는 원하는 날짜 선택
+4. **할 일 입력** — 텍스트 또는 음성으로 입력
+5. **AI 스케줄 생성** — 버튼 클릭 한 번으로 최적 타임박스 생성
+6. **확인 & 저장** — 타임라인 확인 후 Google Calendar에 저장
 
-```
-streamlit-ai-scheduler/
-├── 📂 .streamlit/
-│   └── config.toml         # Streamlit 테마 설정
-├── app.py                  # 메인 Streamlit 애플리케이션
-├── ai_scheduler.py         # AI (LLM) 관련 로직 모듈
-├── google_calendar.py      # Google Calendar API 로직 모듈
-├── requirements.txt        # 필요한 라이브러리 목록
-├── credentials.json        # Google API 인증 정보 (사용자가 준비)
-├── credentials_template.json # 인증 정보 템플릿
-└── README.md              # 이 파일
-```
+---
 
-## 🔧 주요 모듈
+## 🔑 API 엔드포인트
 
-### `app.py`
-- 메인 Streamlit 애플리케이션
-- 사용자 인터페이스 및 전체 워크플로우 관리
+| Method | Path | 설명 |
+|---|---|---|
+| `GET` | `/api/health` | 상태 확인 |
+| `POST` | `/api/schedule` | AI 스케줄 생성 |
+| `GET` | `/api/calendar/auth` | Google OAuth URL 반환 |
+| `GET` | `/api/calendar/callback` | OAuth 콜백 처리 |
+| `GET` | `/api/calendar/events?date=YYYY-MM-DD` | 캘린더 이벤트 조회 |
+| `POST` | `/api/calendar/sync` | 이벤트 일괄 저장 |
+| `GET` | `/api/profile/templates` | 프로필 템플릿 목록 |
 
-### `ai_scheduler.py`
-- OpenAI API 호출 및 프롬프트 구성
-- LLM을 통한 스케줄 생성 로직
-
-### `google_calendar.py`
-- Google Calendar API 인증 및 연동
-- 기존 일정 조회 및 새 일정 생성
+---
 
 ## ⚠️ 주의사항
 
-- `credentials.json` 파일은 절대 공개 저장소에 업로드하지 마세요.
-- OpenAI API 사용량에 따라 비용이 발생할 수 있습니다.
-- Google Calendar API는 일일 할당량이 있습니다.
-
-## 🐛 문제 해결
-
-### Google 인증 오류
-- `token.json` 파일을 삭제하고 다시 인증을 시도하세요.
-- `credentials.json` 파일이 올바른 위치에 있는지 확인하세요.
-
-### OpenAI API 오류
-- API 키가 올바른지 확인하세요.
-- API 사용량 한도를 확인하세요.
+- `credentials.json`, `token.json` 파일은 `.gitignore`에 포함되어 있으며 절대 커밋하지 마세요.
+- OpenAI API 사용량에 따라 비용이 발생합니다.
+- Vercel Hobby 플랜은 함수 타임아웃 10초로 제한됩니다. AI 스케줄 생성은 Pro 플랜(60초) 권장.
+- Google Calendar OAuth는 프로덕션 환경에서 `NEXT_PUBLIC_APP_URL`이 올바르게 설정되어야 합니다.
 
 ## 📝 라이선스
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
-
-
-
-
-
-
-
-
+MIT License
