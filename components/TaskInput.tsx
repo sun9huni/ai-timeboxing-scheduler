@@ -47,7 +47,7 @@ export default function TaskInput({
 
     recognition.onresult = (e: any) => {
       const transcript = Array.from(e.results)
-        .map((r) => r[0].transcript)
+        .map((r: any) => r[0].transcript)
         .join("\n");
       onTasksChange(tasks ? `${tasks}\n- ${transcript}` : `- ${transcript}`);
     };
